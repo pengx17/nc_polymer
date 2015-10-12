@@ -1,6 +1,6 @@
 # nc_polymer
 
-A simple mock application of [slack](slack.com).
+A simple mock application of [slack](https://slack.com).
 
 TODO:
 

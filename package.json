@@ -1,0 +1,11 @@
+{
+  "name": "nc_polymer",
+  "version": "1.0.0",
+  "description": "A chatroom driven by node and polymer",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "electron.js",
+  "author": "pengx17",
+  "license": "ISC"
+}

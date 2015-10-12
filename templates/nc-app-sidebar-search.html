@@ -1,0 +1,88 @@
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="nc-app-sidebar-search">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+        height: 50px;
+      }
+      paper-button {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-flex);
+        color: var(--google-grey-700);
+        height: 100%;
+        margin: 0;
+        background: #fff;
+        transition: background 0.2s ease-in;
+      }
+
+      paper-button:hover {
+        background: var(--google-grey-100);
+      }
+
+      paper-button::shadow .content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+
+      paper-button iron-icon {
+        position: absolute;
+        top: 15px;
+        left: 120px;
+        transition: transform 0.2s ease-out;
+      }
+
+      paper-button:hover iron-icon {
+        transform: translateX(-100px);
+      }
+
+      paper-button #label {
+        position: absolute;
+        text-transform: capitalize;
+        top: 18px;
+        left: 80px;
+        opacity: 0;
+        transition: opacity 0.2s ease-out;
+      }
+
+      paper-button:hover #label {
+        opacity: 100;
+      }
+
+      paper-button #key {
+        position: absolute;
+        right: 10px;
+        top: 14px;
+        font-size: 20px;
+        transition: opacity 0.2s ease-out 0.1s;
+        opacity: 0;
+      }
+
+      paper-button:hover #key {
+        opacity: 100;
+      }
+    </style>
+    <paper-button>
+      <iron-icon icon="search">
+      </iron-icon>
+      <div id="label">
+        Quick switcher
+      </div>
+      <div id="key">
+        ⌘K
+      </div>
+    </paper-button>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app-sidebar-search"
+    });
+  </script>
+
+</dom-module>

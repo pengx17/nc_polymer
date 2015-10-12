@@ -1,0 +1,60 @@
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+
+<link rel="import" href="nc-app-main-chats.html">
+<link rel="import" href="nc-app-main-toolbar.html">
+
+<dom-module id="nc-app-main">
+
+  <template>
+    <style is="custom-style">
+      :host {
+        @apply(--layout-vertical);
+        @apply(--layout-wrap);
+        @apply(--paper-font-body);
+      }
+
+      paper-header-panel#mainPanel {
+        @apply(--layout-flex);
+        background: #fafafa;
+      }
+
+      nc-app-main-chats {
+        margin-bottom: 60px;
+      }
+    </style>
+    <paper-header-panel id="mainPanel" mode="waterfall">
+      <nc-app-main-toolbar class="paper-header" current-room="[[currentRoom]]">
+        <content select="#sideBarToggleButton"></content>
+      </nc-app-main-toolbar>
+      <nc-app-main-chats current-room="[[currentRoom]]" user-name="{{userName}}">
+      </nc-app-main-chats>
+    </paper-header-panel>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app-main",
+
+      properties: {
+        currentRoom: {
+          type: String
+        },
+        userName: String
+      },
+
+      attached: function() {
+        var mainContainer = document.querySelector("#mainPanel #mainContainer");
+        mainContainer.scrollTop = mainContainer.scrollHeight;
+        var self = this;
+        self.querySelector("#chatList").addEventListener("dom-change", function() {
+          // Need to do the scrolling asynchronously. Maybe the scrollHeight value is
+          // not yet updated.
+          self.async(function() {
+            mainContainer.scrollTop = mainContainer.scrollHeight;
+        }, 200);
+        });
+      }
+    });
+  </script>
+
+</dom-module>

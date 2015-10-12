@@ -1,0 +1,95 @@
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
+<dom-module id="nc-channel-create-dialog">
+  <template>
+    <style>
+      paper-dialog {
+        @apply(--layout-vertical);
+        width: 600px;
+        max-height: none !important;
+      }
+
+      .header {
+        @apply(--paper-font-headline);
+      }
+
+      .info {
+        @apply(--paper-font-subhead);
+      }
+
+      .subinfo {
+        font-size: 12px;
+        color: var(--paper-grey-500);
+      }
+
+      .subinfo a {
+        text-decoration: underline;
+      }
+
+      .inputs paper-input {
+        width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .inputs paper-input::shadow .is-invalid paper-input-char-counter {
+        display: none;
+      }
+
+      .buttons paper-button.create {
+        color: #fff;
+        background-color: var(--google-green-500);
+      }
+
+      .buttons paper-button.create[disabled] {
+        color: #fff;
+        background-color: var(--google-grey-500);
+      }
+    </style>
+    <paper-dialog entry-animation="fade-in-animation" exit-animation="fade-out-animation" modal=true>
+      <div class="header">
+        Create a new channel
+      </div>
+      <div class="info">
+        This will create a new public channel that anyone on your team can join.
+        <div class="subinfo">
+          If you need this conversation to be private, you should create <a>a new Private Group</a> instead.
+        </div>
+      </div>
+      <div class="inputs">
+        <paper-input label="Channel name" value="{{channelName}}" id="channelNameInput" char-counter auto-validate pattern="[a-zA-Z\_\-0-9]*" minlength="1" maxlength="21" error-message="Names must be 21 characters or less and cannot contain spaces or periods." on-value-changed="onInputChange">
+        </paper-input>
+        <paper-input label="Purpose (optional)" value="{{purpose}}">
+        </paper-input>
+      </div>
+      <div class="buttons">
+        <paper-button dialog-dismiss class="cancel">Cancel</paper-button>
+        <paper-button dialog-confirm raised class="create" on-click="onCreate" id="createButton">Create</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-channel-create-dialog",
+      properties: {
+        channelName: String,
+        purpose: String
+      },
+      onCreate: function() {
+        this.fire('createChannel', {
+          channelName: this.channelName,
+          purpose: this.purpose
+        });
+        this.channelName = "";
+        this.purpose = "";
+      },
+      onInputChange: function() {
+        this.async(function() {
+          this.$.createButton.disabled = this.channelName == "" || this.$.channelNameInput.invalid;
+        });
+      }
+    });
+  </script>
+</dom-module>

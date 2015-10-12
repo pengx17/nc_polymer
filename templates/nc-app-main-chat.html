@@ -1,0 +1,169 @@
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/marked-element/marked-element.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+
+<dom-module id="nc-app-main-chat">
+  <template>
+    <style>
+      [container] {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        margin: 5px 5px 0px 5px;
+        position: relative;
+      }
+
+      [container] > div {
+        width: 100%;
+      }
+
+      .chat {
+        @apply(--layout-horizontal);
+      }
+
+      .avatar {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        background: var(--paper-indigo-300);
+        color: white;
+        line-height: 32px;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .chat .title {
+        @apply(--layout-horizontal);
+      }
+
+      .chat .title .userName {
+        /* @apply(--paper-font-common-base) */
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 24px;
+      }
+
+      .chat .title .timestamp {
+        /* @apply(--paper-font-common-base) */
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-size: 8px;
+        font-weight: 600;
+        line-height: 24px;
+        color: var(--google-grey-500);
+        margin-left: 5px;
+      }
+
+      .chat .left-container {
+        width: 32px;
+      }
+
+      .chat .right-container {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        margin-left: 10px;
+      }
+
+      .chat .content {
+        @apply(--paper-font-body1);
+      }
+
+      .chat .markdown-html.content p {
+        margin-top: 0;
+      }
+
+      .chat .markdown-html.content pre {
+        border: solid 1px #DFD9D9;
+        padding: 5px;
+        background-color: #fff;
+      }
+
+      .chat .markdown-html.content code {
+        color: var(--paper-deep-purple-a700);
+      }
+    </style>
+    <div container>
+      <div class='chat'>
+        <div class="left-container">
+          <template is="dom-if" if="{{showLabel}}">
+            <div class="avatar">{{getFistLetter(userName)}}</div>
+          </template>
+        </div>
+        <div class="right-container">
+          <template is="dom-if" if="{{showLabel}}">
+            <div class="title">
+              <div class="userName">{{userName}}</div>
+              <div class="timestamp">{{formatDate(timestamp)}}</div>
+            </div>
+          </template>
+          <marked-element markdown="{{text}}">
+            <div class="markdown-html content"></div>
+          </marked-element>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app-main-chat",
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      properties: {
+        userName: {
+          type: String,
+        },
+        text: {
+          type: String,
+        },
+        timestamp: {
+          type: String,
+        },
+        showLabel: {
+          type: Boolean,
+          value: true
+        },
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'fade-in-animation',
+              node: this
+            }
+          }
+        }
+      },
+      getFistLetter: function(string) {
+        return string[0].toUpperCase();
+      },
+      formatDate: function(date) {
+        var hour = "";
+        var minute = "";
+        var isAM = true;
+
+        date = new Date(Date.parse(date));
+
+        if (date.getHours() > 12) {
+          isAM = false;
+          hour = date.getHours() - 12;
+        } else {
+          hour = date.getHours();
+        }
+
+        if (date.getMinutes() == 0) {
+          minute = "00";
+        } else if (date.getMinutes() < 10) {
+          minute = "0" + date.getMinutes();
+        } else {
+          minute = date.getMinutes();
+        }
+        return "" + hour + ":" + minute + " " + (isAM ? "AM" : "PM");
+      },
+      attached: function() {
+        this.playAnimation();
+      }
+    });
+  </script>
+</dom-module>

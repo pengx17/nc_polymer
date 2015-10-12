@@ -1,0 +1,120 @@
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+
+<dom-module id="nc-app-main-toolbar">
+
+  <template>
+    <style>
+      paper-toolbar {
+        background: #fff;
+        border-bottom: 1px solid;
+        border-bottom-color: #e0e0e0;
+        color: #000;
+      }
+
+      paper-toolbar::shadow #topBar {
+        padding-right: 0;
+      }
+
+      #room-info {
+        @apply(--layout-horizontal);
+      }
+
+      #room-info .title {
+        @apply(--paper-font-title);
+        @apply(--layout-horizontal);
+      }
+
+      #room-info .title .hash {
+        color: var(--paper-grey-500);
+      }
+
+      #room-info .title .title-name {
+        margin-left: 2px;
+      }
+
+      #room-expand {
+        padding: 2px;
+      }
+
+      #room-expand:hover {
+        background-color: var(--paper-light-blue-50);
+        border-radius: 50%;
+      }
+
+      .align-right {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-end-justified);
+      }
+
+      #search-input {
+        margin-left: 10px;
+        transition: width 0.3s ease-in-out;
+        width: 30%;
+        max-width: 200px;
+      }
+
+      #search-input[focused] {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      ::content #sideBarToggleButton {
+        margin-left: -10px;
+        margin-right: 0;
+      }
+    </style>
+    <paper-toolbar>
+      <content select="#sideBarToggleButton"></content>
+      <div id="room-info">
+        <div class="title">
+          <div class="hash">{{getRoomType(currentRoom)}}</div>
+          <div class="title-name">{{getMainRoomName(currentRoom)}}</div>
+        </div>
+        <paper-icon-button icon="expand-more" id="room-expand"></paper-icon-button>
+      </div>
+      <div class="align-right">
+        <paper-icon-button icon="social:person-outline"></paper-icon-button>
+        <paper-icon-button icon="info-outline"></paper-icon-button>
+        <paper-input id="search-input" no-label-float=true>
+          <iron-icon prefix icon="search"></iron-icon>
+        </paper-input>
+        <paper-icon-button icon="social:notifications-none"></paper-icon-button>
+        <paper-icon-button icon="star-border"></paper-icon-button>
+        <paper-icon-button icon="more-horiz"></paper-icon-button>
+      </div>
+    </paper-toolbar>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app-main-toolbar",
+
+      properties: {
+        currentRoom: {
+          type: String
+        }
+      },
+
+      getRoomType: function(roomName) {
+        if (roomName[0] == '#' || roomName[0] == '@') {
+          return roomName[0];
+        } else {
+          return "";
+        }
+      },
+
+      getMainRoomName: function(roomName) {
+        if (this.getRoomType(roomName) !== "") {
+          return roomName.slice(1);
+        } else {
+          return roomName;
+        }
+      }
+    });
+  </script>
+</dom-module>

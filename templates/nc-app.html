@@ -1,0 +1,89 @@
+<link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="nc-app-sidebar.html">
+<link rel="import" href="nc-app-main.html">
+<link rel="import" href="nc-app-input.html">
+
+<dom-module id="nc-app">
+  <template>
+    <style>
+      :host {
+        @apply(--layout-horizontal);
+        font-family: 'RobotoDraft', 'Noto', sans-serif;
+        font-size: 14px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+
+      nc-app-sidebar {
+        @apply(--shadow-elevation-3dp);
+      }
+
+      nc-app-main {
+        @apply(--layout-flex);
+      }
+
+      #appRightPanel {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+
+      #appInput {
+        @apply(--layout-flex);
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 0;
+        padding: 5px 15px;
+      }
+      #notification {
+        z-index: 10;
+      }
+    </style>
+    <paper-toast id="notification" text="{{notificationText}}"></paper-toast>
+    <paper-drawer-panel id="appDrawerPanel">
+      <nc-app-sidebar id="appSideBar" drawer current-room="{{currentRoom}}" user-name="{{userName}}">
+      </nc-app-sidebar>
+      <div main id="appRightPanel">
+        <nc-app-main current-room="{{currentRoom}}" user-name="{{userName}}">
+          <paper-icon-button icon="menu" id="sideBarToggleButton" paper-drawer-toggle>
+          </paper-icon-button>
+        </nc-app-main>
+        <nc-app-input id="appInput">
+        </nc-app-input>
+      </div>
+    </paper-drawer-panel>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app",
+
+      properties: {
+        currentRoom: {
+          type: String,
+          notify: true,
+          value: ""
+        },
+        userName: {
+          type: String,
+          notify: true,
+          value: "anonymous"
+        },
+        notificationText: {
+          type: String,
+          notify: true,
+          value: "This is a notitication"
+        }
+      }
+    });
+  </script>
+
+</dom-module>

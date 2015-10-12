@@ -1,0 +1,31 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+
+<script>
+
+  Polymer({
+
+    is: 'grow-up-animation',
+
+    behaviors: [
+      Polymer.NeonAnimationBehavior
+    ],
+
+    configure: function(config) {
+      var node = config.node;
+      node.style.height = '0';
+      this._effect = new KeyframeEffect(node, [
+        {'height': '0'},
+        {'height': config.height}
+      ], this.timingFromConfig(config));
+      return this._effect;
+    },
+
+    complete: function(config) {
+      config.node.style.height = config.height;
+    }
+
+  });
+
+</script>

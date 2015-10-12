@@ -1,0 +1,81 @@
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/image-icons.html">
+
+<dom-module id="nc-user-panel">
+
+  <template>
+    <style is="custom-style">
+      :host {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        height: 100px;
+      }
+
+      paper-toolbar {
+        @apply(--layout-flex);
+        height: 100%;
+      }
+
+      #topBar {
+        @apply(--layout-start);
+      }
+
+      paper-toolbar .team-name {
+        @apply(--paper-font-title);
+        margin-left: 0;
+      }
+
+      paper-icon-button.expand {
+        padding: 0px;
+      }
+
+      .user-name {
+        margin-left: 5px;
+        width: 10em;
+      }
+
+      paper-input.user-name::shadow #input {
+        color: #fff;
+      }
+
+      paper-input.user-name::shadow .underline {
+        display: none;
+      }
+
+      .login-status {
+        height: 16px;
+        width: 16px;
+        right: 0px;
+        border-radius: 50%;
+        line-height: 16px;
+        font-size: 10px;
+        text-align: center;
+        background: var(--paper-green-a700);
+      }
+    </style>
+    <paper-toolbar>
+      <div class="team-name">{{teamName}}</div>
+      <div class="bottom login-status" icon="image:lens"></div>
+      <paper-input class="bottom user-name" no-label-float value="{{userName}}" maxlength="20">
+      </paper-input>
+      <div class="bottom flex"></div>
+      <paper-icon-button class="bottom expand" icon="expand-more"></paper-icon-button>
+    </paper-toolbar>
+  </template>
+  <script>
+    Polymer({
+      is: "nc-user-panel",
+      properties: {
+        userName: {
+          notify: true
+        },
+        teamName: {
+          notify: true,
+          value: "Polymer Chat"
+        }
+      }
+    });
+  </script>
+
+</dom-module>

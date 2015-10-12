@@ -1,0 +1,55 @@
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="nc-app-input">
+
+  <template >
+    <style>
+
+      [chat-input] {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-center);
+        background: #fff;
+        padding: 5px;
+      }
+
+      ::content [chat-input] #input {
+        font-size: 24px;
+      }
+
+      [chat-input] paper-input {
+        @apply(--layout-flex);
+      }
+
+      paper-icon-button {}
+    </style>
+    <paper-material elevation="4" chat-input>
+      <paper-icon-button icon="add"></paper-icon-button>
+      <paper-input no-label-float=true id="input"></paper-input>
+      <paper-icon-button icon="face"></paper-icon-button>
+    </paper-material>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app-input",
+      behaviors: [Polymer.IronA11yKeysBehavior],
+
+      keyBindings: {
+        "enter": "handleEnter"
+      },
+
+      // Support multiline
+      handleEnter: function() {
+        this.fire("newChatEntered", {
+          userName: "xp",
+          text: this.$.input.value
+        });
+        this.$.input.value = "";
+      }
+    });
+  </script>
+</dom-module>

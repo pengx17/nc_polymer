@@ -1,0 +1,114 @@
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+
+<link rel="import" href="grow-up-animation.html">
+
+<dom-module id="nc-sidebar-menu-item">
+
+  <template>
+    <style is="custom-style">
+      :host {
+        height: 48px;
+        display: block;
+      }
+
+      paper-item {
+        outline: none;
+        @apply(--paper-font-subhead);
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
+      }
+
+      .label {
+        @apply(--layout-horizontal);
+      }
+
+      .label .hash {
+        color: var(--paper-grey-500);
+      }
+
+      .label .item-name {
+        margin-left: 5px;
+      }
+
+      paper-item .has-unread {
+        height: 16px;
+        width: 16px;
+        right: 0px;
+        border-radius: 50%;
+        color: white;
+        line-height: 16px;
+        font-size: 10px;
+        text-align: center;
+        background: var(--paper-pink-500);
+        margin-right: 0;
+      }
+    </style>
+    <paper-item>
+      <div class="label">
+        <div class="hash">{{type}}</div>
+        <div class="item-name">{{itemName}}</div>
+      </div>
+      <template is="dom-if" if="{{hasUnread}}">
+        <div class="flex"></div>
+        <div class="has-unread">{{parseUnreadNum(unreadNum)}}</div>
+      </template>
+    </paper-item>
+  </template>
+  <script>
+    Polymer({
+      is: "nc-sidebar-menu-item",
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      properties: {
+        type: {
+          type: String, // #, @ or nothing
+          value: "#"
+        },
+        itemName: String,
+        hasUnread: {
+          type: Boolean,
+          value: false
+        },
+        unreadNum: {
+          type: Number,
+          value: 0
+        },
+        animationConfig: {
+          value: function() {
+            return {
+              'entry': [{
+                // Not sure why but looks like height cannot be used with percentage...
+                name: 'grow-up-animation',
+                node: this,
+                height: '48px',
+                timing: {
+                  duration: 500
+                }
+              }, {
+                name: 'slide-from-right-animation',
+                node: this,
+                timing: {
+                  delay: 400
+                }
+              }]
+            }
+          }
+        }
+      },
+      parseUnreadNum: function(num) {
+        return num == 0 ? "" : num;
+      },
+      attached: function() {
+        this.playAnimation('entry');
+      }
+    });
+  </script>
+
+</dom-module>

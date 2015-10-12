@@ -1,0 +1,9 @@
+{
+  "firebase": "xp-chat",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

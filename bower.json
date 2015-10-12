@@ -1,0 +1,21 @@
+{
+  "name": "nc_polymer",
+  "version": "0.0.0",
+  "description": "A chatroom driven by node and polymer",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "firebase-element": "GoogleWebComponents/firebase-element#~1.0.6",
+    "iron-elements": "PolymerElements/iron-elements#~1.0.4",
+    "paper-drawer-panel": "PolymerElements/paper-drawer-panel#~1.0.3",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.5",
+    "paper-styles": "PolymerElements/paper-styles#~1.0.11",
+    "polymer": "Polymer/polymer#~1.1.4"
+  }
+}

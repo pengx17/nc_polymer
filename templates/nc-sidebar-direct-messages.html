@@ -1,0 +1,40 @@
+<link rel="import" href="nc-sidebar-menu.html">
+
+<dom-module id="nc-sidebar-direct-messages">
+
+  <template>
+    <style is="custom-style">
+    </style>
+    <nc-sidebar-menu menu-items="{{items}}" menu-name="Direct Messages" type="@">
+    </nc-sidebar-menu>
+
+  </template>
+  <script>
+    function newItem(itemName, hasUnread, unreadNum) {
+      return {
+        itemName: itemName,
+        hasUnread: hasUnread,
+        unreadNum: unreadNum
+      }
+    }
+    Polymer({
+      is: "nc-sidebar-direct-messages",
+      properties: {
+        items: {
+          type: Array,
+          notify: true,
+          value: []
+        }
+      },
+      ready: function() {
+        this.items = [
+          newItem("吴彦祖"),
+          newItem("Aragaki Yui", true, 520),
+          newItem("icefrog", true, 2),
+          newItem("Busi Lei", true)
+        ];
+      }
+    });
+  </script>
+
+</dom-module>

@@ -1,0 +1,68 @@
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+
+<link rel="import" href="nc-user-panel.html">
+<link rel="import" href="nc-sidebar-channels.html">
+<link rel="import" href="nc-sidebar-direct-messages.html">
+<link rel="import" href="nc-app-sidebar-search.html">
+
+<dom-module id="nc-app-sidebar">
+
+  <template>
+    <style>
+      :host {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      paper-header-panel::shadow #mainContainer {
+        padding-bottom: 30px;
+      }
+      nc-user-panel {
+      }
+      nc-channels {
+      }
+      nc-app-sidebar-search {
+        @apply(--shadow-elevation-2dp);
+        position: absolute;
+        bottom: 0;
+      }
+    </style>
+    <paper-header-panel mode="waterfall">
+      <nc-user-panel class="paper-header" user-name="{{userName}}">
+      </nc-user-panel>
+      <nc-sidebar-channels id="channels">
+      </nc-sidebar-channels>
+      <nc-sidebar-direct-messages hidden>
+      </nc-sidebar-direct-messages>
+    </paper-header-panel>
+    <nc-app-sidebar-search>
+    </nc-app-sidebar-search>
+  </template>
+
+  <script>
+    Polymer({
+      is: "nc-app-sidebar",
+
+      properties: {
+        currentRoom: {
+          type: String,
+          notify: true
+        },
+
+        userName: {
+          type: String,
+          notify: true
+        }
+      },
+
+      attached: function() {
+        var self = this;
+        this.async(function() {
+          this.$.channels.addEventListener('channelChanged', function(e) {
+            self.currentRoom = "#" + e.detail;
+          })
+        });
+      }
+    });
+  </script>
+
+</dom-module>

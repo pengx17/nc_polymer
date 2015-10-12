@@ -1,0 +1,68 @@
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="nc-sidebar-menu.html">
+<link rel="import" href="nc-channel-create-dialog.html">
+
+<dom-module id="nc-sidebar-channels">
+  <template>
+    <style is="custom-style">
+
+    </style>
+
+    <firebase-collection location="xp-chat.firebaseio.com/channels" data="{{channels}}" id="channelCollection">
+    </firebase-collection>
+
+    <nc-sidebar-menu menu-items="[[channels]]" menu-name="channels" type="#" id="menu">
+    </nc-sidebar-menu>
+
+    <nc-channel-create-dialog id="createDialog">
+    </nc-channel-create-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: "nc-sidebar-channels",
+      properties: {
+        channels: {
+          type: Array,
+          notify: true,
+          value: []
+        },
+        selected: Boolean
+      },
+
+
+      observers: [
+        '_channelsChanged(channels.splices)'
+      ],
+
+      _channelsChanged: function(splices) {
+          if (this.channels.length > 0 && !this.selected) {
+            this.$.menu.select(0);
+            this.selected = true;
+          }
+      },
+
+      attached: function() {
+        this.async(function() {
+          // Attach listeners
+          var createDialog = this.$.createDialog.querySelector("paper-dialog");
+          var channelCollection = this.$.channelCollection;
+          this.$.menu.addEventListener('createclicked', function() {
+            createDialog.open();
+          });
+          this.$.createDialog.addEventListener('createChannel', function(event) {
+            channelCollection.add({
+              itemName: event.detail.channelName,
+              purpose: event.detail.purpose
+            })
+          });
+
+          this.$.menu.addEventListener('menuItemClicked', function(e) {
+            var newChannel = e.detail;
+            // pass to app-sidebar
+            this.fire("channelChanged", newChannel);
+          });
+        });
+      }
+    });
+  </script>
+</dom-module>

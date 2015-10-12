@@ -1,0 +1,171 @@
+<link rel="import" href="../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+
+<link rel="import" href="nc-app-main-chat.html">
+
+<dom-module id="nc-app-main-chats">
+
+  <template>
+    <style>
+      :host {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        padding: 8px 8px;
+      }
+      #loaddingSpinner {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        left: 20px;
+        top: 20px;
+      }
+      .dateSpliter {
+        color: var(--google-grey-300);
+      }
+    </style>
+
+    <firebase-collection location="{{chatsLocation}}" data="{{rawChats}}" order-by-child="roomName" equal-to="{{currentRoom}}" id="chatsCollection"></firebase-collection>
+
+    <paper-spinner id="loaddingSpinner" active="{{isLoading}}"></paper-spinner>
+    <template is="dom-repeat" items="{{chatsGroupedByDays}}" as="chatByDay" id="chatList" sort="sortByDay">
+      <div class="dateSpliter">
+        <span>{{chatByDay.day}}</span>
+      </div>
+
+      <template is="dom-repeat" items="[[chatByDay.chats]]" as="chatItem" sort="sortByTimestamp">
+        <nc-app-main-chat user-name="{{chatItem.userName}}" timestamp="{{chatItem.timestamp}}" text="{{chatItem.text}}" show-label="{{chatItem.showLabel}}" class="chat">
+        </nc-app-main-chat>
+
+      </template>
+    </template>
+  </template>
+
+  <script>
+    var self;
+
+    Polymer({
+      is: "nc-app-main-chats",
+
+      properties: {
+        rawChats: {
+          type: Array,
+          notify: true
+        },
+        chatsGroupedByDays: {
+          type: Array,
+          notify: true
+        },
+        currentRoom: {
+          type: String,
+          observer: "_currentRoomChanged"
+        },
+        roomsRootLocation: {
+          type: String,
+          notify: true
+        },
+        chatsLocation: {
+          type: String,
+          value: "https://xp-chat.firebaseio.com/chats"
+        },
+        userName: String,
+        isLoading: {
+          type: Boolean,
+          notify: true
+        }
+      },
+
+      observers: [
+       'refreshChats(rawChats.splices)'
+      ],
+
+      ready: function() {
+        self = this;
+      },
+
+      attached: function() {
+        document.querySelector("#appInput").addEventListener("newChatEntered", function(newChat) {
+          self.pushChat(newChat.detail.userName, newChat.detail.text);
+        });
+      },
+
+      pushChat: function(name, text) {
+        var newChat = {
+          userName: this.userName,
+          roomName: this.currentRoom,
+          text: text,
+          timestamp: new Date().toJSON(),
+        };
+
+        this.$.chatsCollection.add(newChat);
+      },
+
+      _currentRoomChanged: function() {
+        this.isLoading = false;
+      },
+
+      sortByTimestamp: function(chatA, chatB) {
+        // order ascend
+        return Date.parse(chatA.timestamp) > Date.parse(chatB.timestamp)
+      },
+
+      sortByDay: function(chatGroupA, chatGroupB) {
+        // order ascend
+        return Date.parse(chatGroupA.day) > Date.parse(chatGroupB.day)
+      },
+
+      refreshChats: function() {
+
+        // This function will structure the chats object:
+        // - split into days
+        // - the adjacent chats by the same person is labeled with showLabel = false
+        function formatChats(rawChats) {
+
+          function getDayOfTimestamp(timestamp) {
+            var date = new Date(Date.parse(timestamp));
+            return "" + date.getFullYear() + "-"+ (date.getMonth() + 1) + "-" + date.getDate();
+          };
+
+          var sortedRawChats = rawChats.slice();
+          sortedRawChats = sortedRawChats.sort(self.sortByTimestamp);
+          var groupedChats = {};
+
+          for (var i = 0; i < sortedRawChats.length; i ++) {
+            var chat = sortedRawChats[i];
+            var day = getDayOfTimestamp(chat.timestamp);
+            // first, put the chats into buckets
+            groupedChats[day] = groupedChats[day] || [];
+            groupedChats[day].push(chat);
+          }
+
+          self.chatsGroupedByDays = [];
+          // rearrange items
+          for (var day in groupedChats) {
+            var chats = [];
+            var lastUser = "";
+
+            groupedChats[day].forEach(function (chat){
+              chats.push({
+               userName: chat.userName,
+               timestamp: chat.timestamp,
+               text: chat.text,
+               showLabel: chat.userName !== lastUser
+              });
+              lastUser = chat.userName;
+            });
+
+            self.push('chatsGroupedByDays', {
+              day: day,
+              chats: chats
+            });
+          }
+        }
+
+        formatChats(this.rawChats);
+        if (this.rawChats.length == 0) {
+          this.isLoading = true;
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="nc-sidebar-menu-item.html">
+
+<dom-module id="nc-sidebar-menu">
+
+  <template>
+    <style is="custom-style">
+      .title {
+        @apply(--paper-font-title);
+        color: var(--paper-grey-500);
+        margin-left: 10px;
+      }
+
+      .menu-header {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-justified);
+        color: var(--paper-grey-500);
+      }
+
+      .menu-header *:hover {
+        color: var(--paper-grey-700);
+      }
+
+      .menu-header paper-icon-button {
+        margin-right: 4px;
+      }
+
+      paper-menu.menuItems {
+        padding-top: 0;
+        margin-bottom: 20px;
+        --paper-menu-selected-item: {
+          background-color: var(--paper-grey-300);
+        }
+      }
+    </style>
+
+    <div class="menu-header">
+      <div class="title" id="titleLabel">[[menuName]]</div>
+      <paper-icon-button icon="add-circle-outline" id="createButton" on-click="handleCreateClick">
+      </paper-icon-button>
+    </div>
+    <paper-menu class="menuItems" id="menu">
+      <template is="dom-repeat" items="{{menuItems}}">
+        <nc-sidebar-menu-item class="menuItem" type="{{type}}" item-name="{{item.itemName}}" has-unread="{{item.hasUnread}}" unread-num="{{item.unreadNum}}" on-click="handelMenuItemClick">
+        </nc-sidebar-menu-item>
+      </template>
+    </paper-menu>
+  </template>
+  <script>
+    Polymer({
+      is: "nc-sidebar-menu",
+      properties: {
+        menuName: {
+          type: String,
+          notify: true
+        },
+        type: String,
+        menuItems: {
+          type: Array,
+          notify: true,
+          value: []
+        }
+      },
+      handleCreateClick: function() {
+        this.fire("createclicked");
+      },
+      handelMenuItemClick: function(event) {
+        this.fire("menuItemClicked", event.model.get('item.itemName'));
+      },
+      select: function(index) {
+        this.$.menu.select(index);
+        this.fire("menuItemClicked", this.menuItems[index].itemName);
+      }
+    });
+  </script>
+
+</dom-module>

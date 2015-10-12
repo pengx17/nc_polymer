@@ -4,6 +4,8 @@
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 
+<link rel="import" href="nc-roominfo-dialog.html">
+
 <dom-module id="nc-app-main-toolbar">
 
   <template>
@@ -53,14 +55,17 @@
 
       #search-input {
         margin-left: 10px;
-        transition: width 0.3s ease-in-out;
-        width: 30%;
+        transition: width 0.3s ease-in;
+        width: 100px;
         max-width: 200px;
+        --paper-input-container-underline-focus: {
+          display: none;
+        }
       }
 
       #search-input[focused] {
         width: 100%;
-        max-width: 500px;
+        max-width: 300px;
       }
 
       ::content #sideBarToggleButton {
@@ -78,16 +83,17 @@
         <paper-icon-button icon="expand-more" id="room-expand"></paper-icon-button>
       </div>
       <div class="align-right">
-        <paper-icon-button icon="social:person-outline"></paper-icon-button>
-        <paper-icon-button icon="info-outline"></paper-icon-button>
-        <paper-input id="search-input" no-label-float=true>
+        <paper-icon-button icon="social:person-outline" hidden></paper-icon-button>
+        <paper-icon-button icon="info-outline" on-click="handleRoominfoButtonClick"></paper-icon-button>
+        <paper-input id="search-input" no-label-float=true hidden>
           <iron-icon prefix icon="search"></iron-icon>
         </paper-input>
-        <paper-icon-button icon="social:notifications-none"></paper-icon-button>
-        <paper-icon-button icon="star-border"></paper-icon-button>
-        <paper-icon-button icon="more-horiz"></paper-icon-button>
+        <paper-icon-button icon="social:notifications-none" hidden></paper-icon-button>
+        <paper-icon-button icon="star-border" hidden></paper-icon-button>
+        <paper-icon-button icon="more-horiz" hidden></paper-icon-button>
       </div>
     </paper-toolbar>
+    <nc-roominfo-dialog id="roominfoDialog" room-name="{{currentRoom}}"></nc-roominfo-dialog>
   </template>
 
   <script>
@@ -114,6 +120,10 @@
         } else {
           return roomName;
         }
+      },
+
+      handleRoominfoButtonClick: function() {
+        this.$.roominfoDialog.open();
       }
     });
   </script>

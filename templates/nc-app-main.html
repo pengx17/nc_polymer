@@ -23,7 +23,7 @@
       }
     </style>
     <paper-header-panel id="mainPanel" mode="waterfall">
-      <nc-app-main-toolbar class="paper-header" current-room="[[currentRoom]]">
+      <nc-app-main-toolbar class="paper-header" current-room="[[currentRoom]]" purpose="{{purpose}}">
         <content select="#sideBarToggleButton"></content>
       </nc-app-main-toolbar>
       <nc-app-main-chats current-room="[[currentRoom]]" user-name="{{userName}}">
@@ -39,6 +39,7 @@
         currentRoom: {
           type: String
         },
+        purpose: String,
         userName: String
       },
 

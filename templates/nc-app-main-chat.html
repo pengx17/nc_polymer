@@ -136,7 +136,7 @@
         }
       },
       getFistLetter: function(string) {
-        return string[0].toUpperCase();
+        return string.length > 0 ? string[0].toUpperCase() : "";
       },
       formatDate: function(date) {
         var hour = "";

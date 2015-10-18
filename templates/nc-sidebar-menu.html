@@ -63,14 +63,24 @@
           value: []
         }
       },
+
       handleCreateClick: function() {
         this.fire("createclicked");
       },
+
       handelMenuItemClick: function(event) {
         this.fire("menuItemClicked", event.model.get('item.itemName'));
       },
-      select: function(index) {
-        this.$.menu.select(index);
+
+      select: function(roomName) {
+        if (roomName.startsWith('#')) {
+          roomName = roomName.slice(1);
+        }
+        // calculate the index
+        var index = this.menuItems.findIndex(function(item) {
+          return item.itemName == roomName
+        });
+        this.$.menu.select(index ? index : 0);
         this.fire("menuItemClicked", this.menuItems[index].itemName);
       }
     });

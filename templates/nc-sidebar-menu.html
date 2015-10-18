@@ -80,7 +80,8 @@
         var index = this.menuItems.findIndex(function(item) {
           return item.itemName == roomName
         });
-        this.$.menu.select(index ? index : 0);
+        index = index && index != -1 ? index : 0;
+        this.$.menu.select(index);
         this.fire("menuItemClicked", this.menuItems[index].itemName);
       }
     });

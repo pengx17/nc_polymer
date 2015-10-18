@@ -44,6 +44,7 @@
         bottom: 0;
         padding: 5px 15px;
       }
+
       #notification {
         z-index: 10;
       }
@@ -81,6 +82,15 @@
         this.userInfo = {
           userName: "anonymous"
         }
+      }
+    });
+
+    var ref = new Firebase("https://xp-chat.firebaseio.com");
+    ref.authAnonymously(function(error, authData) {
+      if (error) {
+        console.log("Login Failed!", error);
+      } else {
+        console.log("Authenticated successfully with payload:", authData);
       }
     });
   </script>

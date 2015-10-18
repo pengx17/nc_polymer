@@ -20,6 +20,19 @@
         left: 20px;
         top: 20px;
       }
+      .noChats {
+        font-size: 30px;
+        color: var(--google-grey-300);
+        transition: opacity 0.2s ease-in;
+        opacity: 100;
+        left: 20px;
+        top: 20px;
+        position: absolute;
+      }
+
+      .noChats[hide] {
+        opacity: 0;
+      }
       .dateSpliter {
         color: var(--google-grey-300);
       }
@@ -28,6 +41,9 @@
     <firebase-collection location="{{chatsLocation}}" data="{{rawChats}}" order-by-child="roomName" equal-to="{{currentRoom}}" id="chatsCollection"></firebase-collection>
 
     <paper-spinner id="loaddingSpinner" active="{{isLoading}}"></paper-spinner>
+    <div class="noChats" hide$="{{!isEmptyChats}}">
+      There is no chats yet in this room.
+    </div>
     <template is="dom-repeat" items="{{chatsGroupedByDays}}" as="chatByDay" id="chatList" sort="sortByDay">
       <div class="dateSpliter">
         <span>{{chatByDay.day}}</span>
@@ -72,6 +88,11 @@
         isLoading: {
           type: Boolean,
           notify: true
+        },
+        isEmptyChats: {
+          type: Boolean,
+          notify: true,
+          value: false
         }
       },
 
@@ -102,6 +123,7 @@
 
       _currentRoomChanged: function() {
         this.isLoading = false;
+        this._updateEmptyChats();
       },
 
       sortByTimestamp: function(chatA, chatB) {
@@ -165,6 +187,12 @@
         if (this.rawChats.length == 0) {
           this.isLoading = true;
         }
+        this._updateEmptyChats();
+      },
+
+      _updateEmptyChats: function() {
+        this.isEmptyChats = !this.isLoading &&
+          (this.rawChats == null || this.rawChats.length == 0);
       }
     });
   </script>

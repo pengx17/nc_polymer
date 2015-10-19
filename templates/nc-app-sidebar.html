@@ -27,9 +27,9 @@
       }
     </style>
     <paper-header-panel mode="waterfall">
-      <nc-user-panel class="paper-header" user-name="{{userName}}">
+      <nc-user-panel class="paper-header" user-name="{{userInfo.userName}}">
       </nc-user-panel>
-      <nc-sidebar-channels id="channels" current-room="{{currentRoom}}">
+      <nc-sidebar-channels id="channels" current-room="{{userInfo.currentRoom}}">
       </nc-sidebar-channels>
       <nc-sidebar-direct-messages hidden>
       </nc-sidebar-direct-messages>
@@ -43,22 +43,14 @@
       is: "nc-app-sidebar",
 
       properties: {
-        currentRoom: {
-          type: String,
-          notify: true
-        },
-
-        userName: {
-          type: String,
-          notify: true
-        }
+				userInfo: Object
       },
 
       attached: function() {
         var self = this;
         this.async(function() {
           this.$.channels.addEventListener('channelChanged', function(e) {
-            self.currentRoom = "#" + e.detail;
+						self.set('userInfo.currentRoom', "#" + e.detail);
           })
         });
       }

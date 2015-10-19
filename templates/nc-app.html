@@ -51,7 +51,7 @@
     </style>
     <paper-toast id="notification" text="{{notificationText}}"></paper-toast>
     <paper-drawer-panel id="appDrawerPanel" disable-swipe=true>
-      <nc-app-sidebar id="appSideBar" drawer current-room="{{userInfo.currentRoom}}" user-name="{{userInfo.userName}}">
+      <nc-app-sidebar id="appSideBar" drawer user-info="{{userInfo}}">
       </nc-app-sidebar>
       <div main id="appRightPanel">
         <nc-app-main current-room="{{userInfo.currentRoom}}" user-name="{{userInfo.userName}}">

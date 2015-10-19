@@ -86,9 +86,13 @@
 						return 0;
 					}
 				}(this));
-				index = index && index != -1 ? index : 0;
-				this.$.menu.select(index);
-				this.fire("menuItemClicked", this.menuItems[index].itemName);
+				if (index == -1) {
+					return false;
+				} else {
+					this.$.menu.select(index);
+					this.fire("menuItemClicked", this.menuItems[index].itemName);
+					return true;
+				}
 			}
 		});
 	</script>

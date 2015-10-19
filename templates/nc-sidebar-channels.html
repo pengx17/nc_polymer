@@ -36,8 +36,7 @@
 
       _channelsChanged: function(splices) {
           if (this.channels.length > 0 && !this.selected) {
-            this.$.menu.select(this.currentRoom);
-            this.selected = true;
+            this.selected = this.$.menu.select(this.currentRoom);
           }
       },
 

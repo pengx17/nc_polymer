@@ -93,7 +93,8 @@
           type: Boolean,
           notify: true,
           value: false
-        }
+        },
+        pendingEmpty: Number
       },
 
       observers: [
@@ -191,8 +192,18 @@
       },
 
       _updateEmptyChats: function() {
-        this.isEmptyChats = !this.isLoading &&
+        var isEmptyChats = !this.isLoading &&
           (this.rawChats == null || this.rawChats.length == 0);
+        var self = this;
+        if (isEmptyChats && !this.pendingEmpty) {
+          this.pendingEmpty = this.async(function() {
+            self.isEmptyChats = true;
+          }, 1500);
+        } else {
+          self.isEmptyChats = false;
+          this.cancelAsync(this.pendingEmpty);
+          this.pendingEmpty = null;
+        }
       }
     });
   </script>

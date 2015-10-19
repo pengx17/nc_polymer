@@ -23,10 +23,10 @@
       }
     </style>
     <paper-header-panel id="mainPanel" mode="waterfall">
-      <nc-app-main-toolbar class="paper-header" current-room="[[currentRoom]]" purpose="{{purpose}}">
+      <nc-app-main-toolbar class="paper-header" current-room="[[userInfo.currentRoom]]" purpose="{{purpose}}">
         <content select="#sideBarToggleButton"></content>
       </nc-app-main-toolbar>
-      <nc-app-main-chats current-room="[[currentRoom]]" user-name="{{userName}}">
+      <nc-app-main-chats current-room="[[userInfo.currentRoom]]" user-name="{{userInfo.userName}}">
       </nc-app-main-chats>
     </paper-header-panel>
   </template>
@@ -36,11 +36,8 @@
       is: "nc-app-main",
 
       properties: {
-        currentRoom: {
-          type: String
-        },
+        userInfo: Object,
         purpose: String,
-        userName: String
       },
 
       attached: function() {

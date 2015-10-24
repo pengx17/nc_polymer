@@ -13,6 +13,7 @@
         @apply(--layout-flex);
         padding: 8px 8px;
       }
+
       #loaddingSpinner {
         position: absolute;
         width: 100px;
@@ -20,6 +21,7 @@
         left: 20px;
         top: 20px;
       }
+
       .noChats {
         font-size: 30px;
         color: var(--google-grey-300);
@@ -33,6 +35,7 @@
       .noChats[hide] {
         opacity: 0;
       }
+
       .dateSpliter {
         color: var(--google-grey-300);
       }
@@ -98,7 +101,7 @@
       },
 
       observers: [
-       'refreshChats(rawChats.splices)'
+        'refreshChats(rawChats.splices)'
       ],
 
       ready: function() {
@@ -123,8 +126,7 @@
       },
 
       _currentRoomChanged: function() {
-        this.isLoading = false;
-        this._updateEmptyChats();
+        this.isLoading = true;
       },
 
       sortByTimestamp: function(chatA, chatB) {
@@ -138,67 +140,72 @@
       },
 
       refreshChats: function() {
+        function _refreshChats() {
+          // This function will structure the chats object:
+          // - split into days
+          // - the adjacent chats by the same person is labeled with showLabel = false
+          function formatChats(rawChats) {
 
-        // This function will structure the chats object:
-        // - split into days
-        // - the adjacent chats by the same person is labeled with showLabel = false
-        function formatChats(rawChats) {
+            function getDayOfTimestamp(timestamp) {
+              var date = new Date(Date.parse(timestamp));
+              return "" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+            };
 
-          function getDayOfTimestamp(timestamp) {
-            var date = new Date(Date.parse(timestamp));
-            return "" + date.getFullYear() + "-"+ (date.getMonth() + 1) + "-" + date.getDate();
-          };
+            var sortedRawChats = rawChats.slice();
+            sortedRawChats = sortedRawChats.sort(self.sortByTimestamp);
+            var groupedChats = {};
 
-          var sortedRawChats = rawChats.slice();
-          sortedRawChats = sortedRawChats.sort(self.sortByTimestamp);
-          var groupedChats = {};
+            for (var i = 0; i < sortedRawChats.length; i++) {
+              var chat = sortedRawChats[i];
+              var day = getDayOfTimestamp(chat.timestamp);
+              // first, put the chats into buckets
+              groupedChats[day] = groupedChats[day] || [];
+              groupedChats[day].push(chat);
+            }
 
-          for (var i = 0; i < sortedRawChats.length; i ++) {
-            var chat = sortedRawChats[i];
-            var day = getDayOfTimestamp(chat.timestamp);
-            // first, put the chats into buckets
-            groupedChats[day] = groupedChats[day] || [];
-            groupedChats[day].push(chat);
-          }
+            self.chatsGroupedByDays = [];
+            // rearrange items
+            for (var day in groupedChats) {
+              var chats = [];
+              var lastUser = "";
 
-          self.chatsGroupedByDays = [];
-          // rearrange items
-          for (var day in groupedChats) {
-            var chats = [];
-            var lastUser = "";
-
-            groupedChats[day].forEach(function (chat){
-              chats.push({
-               userName: chat.userName,
-               timestamp: chat.timestamp,
-               text: chat.text,
-               showLabel: chat.userName !== lastUser
+              groupedChats[day].forEach(function(chat) {
+                chats.push({
+                  userName: chat.userName,
+                  timestamp: chat.timestamp,
+                  text: chat.text,
+                  showLabel: chat.userName !== lastUser
+                });
+                lastUser = chat.userName;
               });
-              lastUser = chat.userName;
-            });
 
-            self.push('chatsGroupedByDays', {
-              day: day,
-              chats: chats
-            });
+              self.push('chatsGroupedByDays', {
+                day: day,
+                chats: chats
+              });
+            }
           }
+
+          formatChats(this.rawChats);
+          if (this.rawChats.length != 0) {
+            this.isLoading = false;
+          }
+          this._updateEmptyStatus();
         }
 
-        formatChats(this.rawChats);
-        if (this.rawChats.length == 0) {
-          this.isLoading = true;
-        }
-        this._updateEmptyChats();
+        // this makes sure that refresh only happens when firebase finishes reload
+        this.debounce("refreshChats", _refreshChats.bind(this), 100);
       },
 
-      _updateEmptyChats: function() {
-        var isEmptyChats = !this.isLoading &&
+      _updateEmptyStatus: function() {
+        var isEmptyChats =
           (this.rawChats == null || this.rawChats.length == 0);
         var self = this;
         if (isEmptyChats && !this.pendingEmpty) {
           this.pendingEmpty = this.async(function() {
+            self.isLoading = false;
             self.isEmptyChats = true;
-          }, 1500);
+          }, 3000);
         } else {
           self.isEmptyChats = false;
           this.cancelAsync(this.pendingEmpty);

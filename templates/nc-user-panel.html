@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../bower_components/google-signin/google-signin.html">
+
 
 <dom-module id="nc-user-panel">
 
@@ -56,11 +58,10 @@
     </style>
     <paper-toolbar>
       <div class="team-name">{{teamName}}</div>
-      <div class="bottom login-status" icon="image:lens"></div>
-      <paper-input class="bottom user-name" no-label-float value="{{userName}}" maxlength="20">
-      </paper-input>
+      <google-signin id="signInButton" class="sign-in bottom" height="short" width="iconOnly" client-id="207812544726-m81n58qiimvge75eci9mvpqv062ibpla.apps.googleusercontent.com"></google-signin>
+      <div class="bottom user-name">{{userName}}</div>
       <div class="bottom flex"></div>
-      <paper-icon-button class="bottom expand" icon="expand-more"></paper-icon-button>
+      <paper-icon-button class="bottom expand" icon="expand-more" hidden></paper-icon-button>
     </paper-toolbar>
   </template>
   <script>
@@ -74,6 +75,16 @@
           notify: true,
           value: "Polymer Chat"
         }
+      },
+
+      attached: function() {
+        this.$.signInButton.addEventListener("google-signin-aware-success", function() {
+          var profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
+          this.userName = profile.getName();
+        }.bind(this));
+        this.$.signInButton.addEventListener("google-signin-aware-signed-out", function() {
+          this.userName = "anonymous";
+        }.bind(this));
       }
     });
   </script>

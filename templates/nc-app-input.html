@@ -45,7 +45,6 @@
       // Support multiline
       handleEnter: function() {
         this.fire("newChatEntered", {
-          userName: "xp",
           text: this.$.input.value
         });
         this.$.input.value = "";

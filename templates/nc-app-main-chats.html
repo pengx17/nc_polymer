@@ -110,11 +110,11 @@
 
       attached: function() {
         document.querySelector("#appInput").addEventListener("newChatEntered", function(newChat) {
-          self.pushChat(newChat.detail.userName, newChat.detail.text);
+          self.pushChat(newChat.detail.text);
         });
       },
 
-      pushChat: function(name, text) {
+      pushChat: function(text) {
         var newChat = {
           userName: this.userName,
           roomName: this.currentRoom,
